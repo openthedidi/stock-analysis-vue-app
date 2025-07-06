@@ -1,9 +1,13 @@
 <template>
-  <div class="login-container">
-    <div class="login-box">
+  <div class="register-container">
+    <div class="register-box">
       <img src="/member-Icon.png" alt="Member Icon" class="member-icon" />
-      <h2>Login</h2>
-      <form @submit.prevent="handleLogin">
+      <h2>Register</h2>
+      <form @submit.prevent="handleRegister">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="username" required />
+        </div>
         <div class="input-group">
           <label for="email">Email</label>
           <input type="email" id="email" v-model="email" required />
@@ -12,13 +16,14 @@
           <label for="password">Password</label>
           <input type="password" id="password" v-model="password" required />
         </div>
-        <button type="submit" class="login-button">Login</button>
+        <div class="input-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" v-model="confirmPassword" required />
+        </div>
+        <button type="submit" class="register-button">Register</button>
       </form>
-      <div class="social-login">
-        <button @click="handleGoogleLogin" class="google-login-button">Sign in with Google</button>
-      </div>
-      <p class="register-link">
-        Don't have an account? <a href="#" @click="goToRegister">Register here</a>
+      <p class="login-link">
+        Already have an account? <a href="#" @click="goToLogin">Login here</a>
       </p>
     </div>
   </div>
@@ -28,47 +33,51 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+const username = ref('');
 const email = ref('');
 const password = ref('');
+const confirmPassword = ref('');
 const router = useRouter();
 
-const handleLogin = async () => {
+const handleRegister = async () => {
+  if (password.value !== confirmPassword.value) {
+    alert('Passwords do not match!');
+    return;
+  }
+
   try {
-    const response = await fetch('http://localhost:8080/auth/login', {
+    const response = await fetch('http://localhost:8080/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        username: username.value,
         email: email.value,
         password: password.value,
       }),
     });
 
     if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('token', data.accessToken);
-      router.push('/dashboard');
+      alert('Registration successful! Redirecting to login.');
+      router.push('/login');
     } else {
-      alert('Login failed!');
+      const errorData = await response.json();
+      alert(`Registration failed: ${errorData.message}`);
     }
   } catch (error) {
-    console.error('Login error:', error);
-    alert('An error occurred during login.');
+    console.error('Registration error:', error);
+    alert('An error occurred during registration.');
   }
 };
 
-const handleGoogleLogin = () => {
-  window.location.href = 'http://localhost:8080/oauth2/authorization/google';
-};
-
-const goToRegister = () => {
-  router.push('/register');
+const goToLogin = () => {
+  router.push('/login');
 };
 </script>
 
 <style scoped>
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,7 +86,7 @@ const goToRegister = () => {
   font-family: Arial, sans-serif;
 }
 
-.login-box {
+.register-box {
   background-color: #fff;
   padding: 40px;
   border-radius: 8px;
@@ -119,10 +128,10 @@ h2 {
   font-size: 16px;
 }
 
-.login-button {
+.register-button {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   border: none;
   border-radius: 4px;
@@ -131,23 +140,23 @@ h2 {
   transition: background-color 0.3s ease;
 }
 
-.login-button:hover {
-  background-color: #0056b3;
+.register-button:hover {
+  background-color: #218838;
 }
 
-.register-link {
+.login-link {
   margin-top: 20px;
   font-size: 14px;
   color: #555;
 }
 
-.register-link a {
+.login-link a {
   color: #007bff;
   text-decoration: none;
   font-weight: bold;
 }
 
-.register-link a:hover {
+.login-link a:hover {
   text-decoration: underline;
 }
 </style>

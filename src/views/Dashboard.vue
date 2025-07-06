@@ -1,16 +1,69 @@
 <template>
-  <div class="dashboard">
-    <h1>股票儀表板</h1>
-    <p>這裡將會顯示股票搜尋、圖表和詳細資訊。</p>
+  <div class="dashboard-container">
+    <div class="dashboard-content">
+      <h2>Welcome to the Dashboard!</h2>
+      <p>This is your main application area.</p>
+      <button @click="handleLogout" class="logout-button">Logout</button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// 儀表板的邏輯將會放在這裡
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const handleLogout = () => {
+  // Implement your logout logic here
+  alert('Logged out successfully!');
+  router.push('/login');
+};
 </script>
 
 <style scoped>
-.dashboard {
+.dashboard-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-content {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 28px;
+}
+
+p {
+  margin-bottom: 30px;
+  color: #555;
+  font-size: 18px;
+}
+
+.logout-button {
+  padding: 12px 25px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
 }
 </style>
